@@ -3,58 +3,135 @@
 	public class HashMap<TKey, T> : IMap<TKey, T>
 	{
 		private long _size;
+		private long _capacity;
 		private Entry<TKey, T>[] _entries;
 
-		public HashMap(long size)
+		public HashMap(long capacity)
 		{
-			_size = size;
-			_entries = new Entry<TKey, T>[_size];
+			_capacity = capacity;
+			_entries = new Entry<TKey, T>[_capacity];
 		}
 
 
-		public void Insert(TKey key, T value)
+		public HashMap()
 		{
-			throw new System.NotImplementedException();
+			_size = 0;
+			_capacity = 7;
+			_entries = new Entry<TKey, T>[_capacity];
 		}
+
+		public void Add(TKey key, T value)
+		{
+			var innerKey = GetInnerKey(key);
+			var presentEntry = _entries[innerKey];
+			var entryToInsert = new Entry<TKey, T>(key, value);
+
+			if (presentEntry is null)
+			{
+				_entries[innerKey] = entryToInsert;
+				_size++;
+				return;
+			}
+
+			while (presentEntry.Next != null)
+			{
+				if (presentEntry.Key.Equals(key))
+				{
+					presentEntry.Value = value;
+					return;
+				}
+				else presentEntry = presentEntry.Next;
+			}
+
+			presentEntry.Next = entryToInsert;
+			_size++;
+
+			// TODO: if size is close to the capacity, then need to recreate array with new bigger capacity.
+		}
+
 
 		public T Get(TKey key)
 		{
-			throw new System.NotImplementedException();
+			var innerKey = GetInnerKey(key);
+
+			var entry = _entries[innerKey];
+			while (entry != null)
+			{
+				if (entry.Key.Equals(key))
+					return entry.Value;
+				else entry = entry.Next;
+			}
+
+			return default(T);
 		}
+
+		public T this[TKey key] => Get(key);
 
 		public void Remove(TKey key)
 		{
-			throw new System.NotImplementedException();
+			var innerKey = GetInnerKey(key);
+			var entry = _entries[innerKey];
+
+			Entry<TKey, T> prevEntry = null;
+			while (entry != null)
+			{
+				if (entry.Key.Equals(key))
+					break;
+				prevEntry = entry;
+				entry = entry.Next;
+			}
+
+			if (entry is null)
+			{
+				// TODO: NOT FOUND
+				return;
+			}
+
+			else
+			{
+				if (prevEntry != null)
+				{
+					prevEntry.Next = entry.Next;
+				}
+				else _entries[innerKey] = entry.Next;
+			}
+
+			--_size;
 		}
 
 		public bool Contains(TKey key)
 		{
-			throw new System.NotImplementedException();
+			var innerKey = GetInnerKey(key);
+
+			var entry = _entries[innerKey];
+			while (entry != null)
+			{
+				if (entry.Key.Equals(key))
+					return true;
+				else
+					entry = entry.Next;
+			}
+
+			return false;
 		}
 
-		public void Upsert(TKey key, T value)
+		private long GetInnerKey(TKey key)
 		{
-			throw new System.NotImplementedException();
+			return key.GetHashCode() % _capacity;
 		}
 	}
 
 	public class Entry<TKey, T>
 	{
-		private T _value;
-		private TKey _key;
-		private Entry<TKey, T> _next;
+		public T Value;
+		public readonly TKey Key;
+		public Entry<TKey, T> Next;
 
 		public Entry(TKey key, T value)
 		{
-			_value = value;
-			_key = key;
-			_next = null;
-		}
-
-		public void AddNext(Entry<TKey, T> next)
-		{
-			if (!(next is null) && _next is null)
-				_next = next;
+			Value = value;
+			Key = key;
+			Next = null;
 		}
 	}
 }
