@@ -25,6 +25,13 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="HashMap.Tests.csproj" t="IncludeRecursive" />
         <e p="HashMapTests.cs" t="Include" />
+        <e p="Infrastructure" t="Include">
+          <e p="Generators" t="Include">
+            <e p="HashMapWithCollisionContainsGenerator.cs" t="Include" />
+            <e p="HashMapWithCollisionNotContainsGenerator.cs" t="Include" />
+          </e>
+          <e p="HashMapGeneratorHelper.cs" t="Include" />
+        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp2.0" t="Include">
