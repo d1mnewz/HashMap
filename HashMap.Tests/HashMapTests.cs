@@ -7,7 +7,6 @@ namespace HashMap.Tests
 {
 	public class HashMapTests
 	{
-		// TODO: cases with a collision 
 		[InlineData(1, "hello")]
 		[InlineData(2, "world")]
 		[InlineData(42, "something")]
@@ -21,15 +20,14 @@ namespace HashMap.Tests
 			Assert.True(map.Contains(key));
 		}
 
-		[ClassData(typeof(HashMapWithCollisionContainsGenerator)), ClassData(typeof(HashMapWithCollisionContainsGenerator))]
+		[ClassData(typeof(HashMapWithCollisionContainsGenerator))]
 		[Theory]
 		public void HashMapContains(IMap<int, string> map, int key)
 		{
 			Assert.True(map.Contains(key));
 		}
 
-		[ClassData(typeof(HashMapWithCollisionNotContainsGenerator)),
-		 ClassData(typeof(HashMapWithCollisionNotContainsGenerator))]
+		[ClassData(typeof(HashMapWithCollisionNotContainsGenerator))]
 		[Theory]
 		public void HashMapContainsMustBeFalse(IMap<int, string> map, int key)
 		{
